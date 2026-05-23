@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Book Car')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem;max-width:900px">
+    <div class="breadcrumb">
+        <a href="/cars">Cars</a> / <a th:href="@{/cars/{id}(id=${car.id})}" th:text="${car.displayName}">Car</a> / Book
+    </div>
+
+    <div class="booking-form-layout">
+        <!-- Car Summary -->
+        <div class="booking-car-summary">
+            <img th:src="${car.carImage}" th:alt="${car.displayName}" class="booking-car-img"
+                 onerror="this.src='/images/car-placeholder.svg'"/>
+            <h3 th:text="${car.displayName}">Car Name</h3>
+            <p th:text="${car.variant}">Variant</p>
+            <div class="summary-specs">
+                <span><i class="fas fa-gas-pump"></i> <span th:text="${car.fuelType}">Petrol</span></span>
+                <span><i class="fas fa-cog"></i> <span th:text="${car.transmission}">Auto</span></span>
+                <span><i class="fas fa-users"></i> <span th:text="${car.seats}">5</span> Seats</span>
+            </div>
+            <div class="summary-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <span th:text="${car.location + ', Hyderabad'}">Location</span>
+            </div>
+            <div class="summary-owner">
+                <i class="fas fa-user-tie"></i>
+                <span th:text="'Owner: ' + ${car.owner.name}">Owner</span>
+            </div>
+            <div class="price-summary-box">
+                <div class="price-row">
+                    <span>Price per day</span>
+                    <strong>₹<span th:text="${car.pricePerDay}">0</span></strong>
+                </div>
+                <div class="price-row total-row" id="totalRow" style="display:none">
+                    <span>Total (<span id="dayCount">0</span> days)</span>
+                    <strong class="total-price">₹<span id="totalPrice">0</span></strong>
+                </div>
+            </div>
+
+            <!-- Document Quick View -->
+            <div class="doc-mini">
+                <div class="doc-mini-item"><i class="fas fa-check-circle green"></i> RC: <span th:text="${car.registrationNumber}">RC</span></div>
+                <div class="doc-mini-item"><i class="fas fa-check-circle green"></i> PUC: <span th:text="${car.pucNumber}">PUC</span></div>
+                <div class="doc-mini-item"><i class="fas fa-check-circle green"></i> Insurance Valid</div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="booking-form-card">
+            <h2><i class="fas fa-calendar-check"></i> Confirm Your Booking</h2>
+            <p class="form-subtitle">Fill in the details below. Minimum rental is 1 day.</p>
+
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+            </div>
+
+            <!-- Renter Info (pre-filled) -->
+            <div class="renter-info-banner">
+                <i class="fas fa-user"></i>
+                <div>
+                    <strong th:text="${user.name}">Your Name</strong>
+                    <span th:text="${user.email}">Email</span>
+                    <span th:if="${user.licenseNumber != null}">
+                        DL: <span th:text="${user.licenseNumber}">License</span>
+                    </span>
+                </div>
+            </div>
+
+            <form action="#" th:action="@{/bookings/book/{id}(id=${car.id})}" method="post" class="auth-form" id="bookingForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Start Date</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control"
+                               th:min="${today}" required onchange="calcTotal()"/>
+                        <small class="form-hint">Car pickup date</small>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-check"></i> End Date</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control"
+                               th:min="${today}" required onchange="calcTotal()"/>
+                        <small class="form-hint">Car return date (min. 1 day after start)</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-sticky-note"></i> Note to Owner (Optional)</label>
+                    <textarea name="renterNote" class="form-control" rows="3"
+                              placeholder="Any special requirements, your purpose of travel, etc."></textarea>
+                </div>
+
+                <!-- Price Preview -->
+                <div class="price-preview" id="pricePreview" style="display:none">
+                    <div class="price-line">
+                        <span>₹<span th:text="${car.pricePerDay}">0</span> × <span id="previewDays">0</span> days</span>
+                        <span class="price-total-preview">₹<span id="previewTotal">0</span></span>
+                    </div>
+                </div>
+
+                <div class="booking-terms">
+                    <i class="fas fa-info-circle"></i>
+                    <p>By booking, you agree to Wheelzy's rental terms. Valid DL required at pickup. Fuel not included. Minimum 1-day rental.</p>
+                </div>
+
+                <button type="submit" class="btn btn-blue btn-lg w-full" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Send Booking Request
+                </button>
+                <a th:href="@{/cars/{id}(id=${car.id})}" class="btn btn-outline-blue w-full" style="margin-top:8px">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+var pricePerDay = /*[[${car.pricePerDay}]]*/ 0;
+
+function calcTotal() {
+    var start = document.getElementById('startDate').value;
+    var end = document.getElementById('endDate').value;
+    if (start && end) {
+        var s = new Date(start);
+        var e = new Date(end);
+        var days = Math.round((e - s) / (1000*60*60*24));
+        if (days >= 1) {
+            var total = days * pricePerDay;
+            document.getElementById('dayCount').textContent = days;
+            document.getElementById('totalPrice').textContent = total.toLocaleString('en-IN');
+            document.getElementById('previewDays').textContent = days;
+            document.getElementById('previewTotal').textContent = total.toLocaleString('en-IN');
+            document.getElementById('totalRow').style.display = 'flex';
+            document.getElementById('pricePreview').style.display = 'block';
+            document.getElementById('submitBtn').textContent = '🚗 Book for ₹' + total.toLocaleString('en-IN');
+        }
+    }
+}
+// Set min end date when start changes
+document.getElementById('startDate').addEventListener('change', function() {
+    var start = new Date(this.value);
+    var next = new Date(start.getTime() + 86400000);
+    var y = next.getFullYear(), m = String(next.getMonth()+1).padStart(2,'0'), d = String(next.getDate()).padStart(2,'0');
+    document.getElementById('endDate').min = y+'-'+m+'-'+d;
+});
+</script>
+</body>
+</html>

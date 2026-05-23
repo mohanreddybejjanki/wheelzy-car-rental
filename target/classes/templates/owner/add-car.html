@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('List My Car')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-plus-circle"></i> List Your Car</h1>
+        <p>Add your car details to start earning with Wheelzy</p>
+    </div>
+</div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem;max-width:800px">
+    <div th:if="${error}" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+    </div>
+
+    <form action="/owner/cars/add" method="post" class="add-car-form card-form">
+        <div class="form-section">
+            <h3><i class="fas fa-car"></i> Basic Car Information</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Brand *</label>
+                    <input type="text" name="brand" class="form-control" placeholder="e.g. Maruti Suzuki" required/>
+                </div>
+                <div class="form-group">
+                    <label>Model *</label>
+                    <input type="text" name="model2" class="form-control" placeholder="e.g. Swift" required/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Variant</label>
+                    <input type="text" name="variant" class="form-control" placeholder="e.g. VXI, ZXI+"/>
+                </div>
+                <div class="form-group">
+                    <label>Year *</label>
+                    <input type="number" name="year" class="form-control" placeholder="2022" min="2010" max="2024" required/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" name="color" class="form-control" placeholder="e.g. Pearl White"/>
+                </div>
+                <div class="form-group">
+                    <label>Number of Seats *</label>
+                    <select name="seats" class="form-control" required>
+                        <option value="2">2 Seater</option>
+                        <option value="4">4 Seater</option>
+                        <option value="5" selected>5 Seater</option>
+                        <option value="7">7 Seater</option>
+                        <option value="8">8 Seater</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-gas-pump"></i> Engine & Performance</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fuel Type *</label>
+                    <select name="fuelType" class="form-control" required>
+                        <option value="PETROL">Petrol</option>
+                        <option value="DIESEL">Diesel</option>
+                        <option value="ELECTRIC">Electric</option>
+                        <option value="CNG">CNG</option>
+                        <option value="HYBRID">Hybrid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Transmission *</label>
+                    <select name="transmission" class="form-control" required>
+                        <option value="MANUAL">Manual</option>
+                        <option value="AUTOMATIC">Automatic</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Engine CC</label>
+                    <input type="text" name="engineCC" class="form-control" placeholder="e.g. 1197cc"/>
+                </div>
+                <div class="form-group">
+                    <label>Mileage (kmpl)</label>
+                    <input type="number" name="mileage" class="form-control" placeholder="e.g. 22.5" step="0.1"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-file-alt"></i> Legal Documents</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>RC Number (Registration) *</label>
+                    <input type="text" name="registrationNumber" class="form-control" placeholder="e.g. TS09AB1234" required/>
+                </div>
+                <div class="form-group">
+                    <label>RC Expiry Date *</label>
+                    <input type="text" name="rcExpiry" class="form-control" placeholder="e.g. 31-Dec-2034" required/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>PUC Number *</label>
+                    <input type="text" name="pucNumber" class="form-control" placeholder="e.g. PUC2024001" required/>
+                </div>
+                <div class="form-group">
+                    <label>PUC Expiry Date *</label>
+                    <input type="text" name="pucExpiry" class="form-control" placeholder="e.g. 31-Dec-2025" required/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Insurance Number *</label>
+                    <input type="text" name="insuranceNumber" class="form-control" placeholder="e.g. INS-2024-001" required/>
+                </div>
+                <div class="form-group">
+                    <label>Insurance Expiry *</label>
+                    <input type="text" name="insuranceExpiry" class="form-control" placeholder="e.g. 31-Dec-2025" required/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-map-marker-alt"></i> Location & Pricing</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Pickup Location in Hyderabad *</label>
+                    <select name="location" class="form-control" required>
+                        <option value="">Select Area</option>
+                        <option>Banjara Hills</option><option>Jubilee Hills</option>
+                        <option>Gachibowli</option><option>Madhapur</option>
+                        <option>Hitech City</option><option>Kondapur</option>
+                        <option>Kukatpally</option><option>Secunderabad</option>
+                        <option>Ameerpet</option><option>Begumpet</option>
+                        <option>Dilsukhnagar</option><option>LB Nagar</option>
+                        <option>Uppal</option><option>Manikonda</option>
+                        <option>Miyapur</option><option>Nallagandla</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Price Per Day (₹) *</label>
+                    <input type="number" name="pricePerDay" class="form-control" placeholder="e.g. 1499" min="500" required/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-image"></i> Car Photo & Description</h3>
+            <div class="form-group">
+                <label>Car Image URL</label>
+                <input type="url" name="carImage" class="form-control" placeholder="Paste an image URL of your car"/>
+                <small class="form-hint">Paste a direct image URL (JPG/PNG). Use Unsplash or Imgur for hosting.</small>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" class="form-control" rows="3"
+                          placeholder="Describe your car — condition, special features, usage restrictions..."></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-blue btn-lg">
+                <i class="fas fa-check-circle"></i> List My Car
+            </button>
+            <a href="/owner/dashboard" class="btn btn-outline-blue btn-lg">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <rect width="600" height="400" fill="#E3F2FD"/>
+  <rect x="100" y="160" width="400" height="160" rx="20" fill="#90CAF9"/>
+  <rect x="150" y="120" width="300" height="120" rx="16" fill="#BBDEFB"/>
+  <rect x="170" y="135" width="110" height="80" rx="8" fill="#E3F2FD" opacity="0.8"/>
+  <rect x="320" y="135" width="110" height="80" rx="8" fill="#E3F2FD" opacity="0.8"/>
+  <circle cx="180" cy="330" r="40" fill="#1565C0"/>
+  <circle cx="180" cy="330" r="24" fill="#90CAF9"/>
+  <circle cx="420" cy="330" r="40" fill="#1565C0"/>
+  <circle cx="420" cy="330" r="24" fill="#90CAF9"/>
+  <rect x="100" y="280" width="400" height="20" rx="4" fill="#64B5F6"/>
+  <text x="300" y="220" text-anchor="middle" fill="#1565C0" font-family="Arial" font-size="18" font-weight="bold">Car Image</text>
+  <text x="300" y="245" text-anchor="middle" fill="#42A5F5" font-family="Arial" font-size="13">Not Available</text>
+</svg>

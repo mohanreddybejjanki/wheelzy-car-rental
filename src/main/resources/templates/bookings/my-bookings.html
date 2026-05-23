@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('My Bookings')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-ticket-alt"></i> My Bookings</h1>
+        <p>Track all your rental requests and bookings</p>
+    </div>
+</div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem">
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}">Success</span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+    </div>
+
+    <!-- Notification for new approvals -->
+    <div th:each="booking : ${bookings}"
+         th:if="${booking.status.name() == 'APPROVED'}"
+         class="approval-banner" style="display:none" th:attr="data-id=${booking.id}">
+        <i class="fas fa-bell"></i> Your booking for <strong th:text="${booking.car.displayName}"></strong> was APPROVED! 🎉
+    </div>
+
+    <div th:if="${bookings.isEmpty()}" class="empty-state">
+        <i class="fas fa-car-side"></i>
+        <h3>No bookings yet</h3>
+        <p>Start by browsing available cars in Hyderabad</p>
+        <a href="/cars" class="btn btn-blue">Browse Cars</a>
+    </div>
+
+    <div class="bookings-list" th:if="${!bookings.isEmpty()}">
+        <div class="booking-card" th:each="booking : ${bookings}"
+             th:classappend="${booking.status.name()}">
+
+            <div class="booking-card-header">
+                <div class="booking-car-info">
+                    <img th:src="${booking.car.carImage}" th:alt="${booking.car.displayName}"
+                         class="booking-thumb" onerror="this.src='/images/car-placeholder.svg'"/>
+                    <div>
+                        <h3 th:text="${booking.car.displayName}">Car</h3>
+                        <span class="booking-ref">Ref: <strong th:text="${booking.bookingReference}">WR001</strong></span>
+                    </div>
+                </div>
+                <div class="booking-status-badge"
+                     th:classappend="${booking.status.name()}"
+                     th:text="${booking.status}">PENDING</div>
+            </div>
+
+            <div class="booking-card-body">
+                <div class="booking-detail-grid">
+                    <div class="bd-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <small>Rental Period</small>
+                            <strong th:text="${booking.startDate + ' → ' + booking.endDate}">Dates</strong>
+                        </div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <small>Duration</small>
+                            <strong th:text="${booking.totalDays + ' day(s)'}">Days</strong>
+                        </div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-rupee-sign"></i>
+                        <div>
+                            <small>Total Amount</small>
+                            <strong th:text="'₹' + ${booking.totalAmount}">Amount</strong>
+                        </div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <small>Pickup</small>
+                            <strong th:text="${booking.car.location + ', Hyderabad'}">Location</strong>
+                        </div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-user-tie"></i>
+                        <div>
+                            <small>Car Owner</small>
+                            <strong th:text="${booking.car.owner.name}">Owner</strong>
+                        </div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <small>Owner Phone</small>
+                            <strong th:text="${booking.car.owner.phone}">Phone</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status messages -->
+                <div th:if="${booking.status.name() == 'PENDING'}" class="status-msg pending-msg">
+                    <i class="fas fa-hourglass-half"></i> Waiting for owner approval. You'll be notified once the owner responds.
+                </div>
+                <div th:if="${booking.status.name() == 'APPROVED'}" class="status-msg approved-msg">
+                    <i class="fas fa-check-circle"></i> <strong>Booking Confirmed!</strong> Pick up from
+                    <span th:text="${booking.car.location}">Location</span>. Contact owner: <span th:text="${booking.car.owner.phone}">Phone</span>
+                </div>
+                <div th:if="${booking.status.name() == 'REJECTED'}" class="status-msg rejected-msg">
+                    <i class="fas fa-times-circle"></i> Booking declined.
+                    <span th:if="${booking.ownerNote != null}" th:text="'Reason: ' + ${booking.ownerNote}">Reason</span>
+                </div>
+                <div th:if="${booking.status.name() == 'CANCELLED'}" class="status-msg cancelled-msg">
+                    <i class="fas fa-ban"></i> You cancelled this booking.
+                </div>
+            </div>
+
+            <div class="booking-card-footer">
+                <span class="booked-on">Booked on <span th:text="${#temporals.format(booking.bookedAt, 'dd MMM yyyy, hh:mm a')}">Date</span></span>
+                <div class="booking-actions">
+                    <!-- Download receipt always available -->
+                    <a th:href="@{/bookings/{id}/receipt(id=${booking.id})}" class="btn btn-outline-blue btn-sm">
+                        <i class="fas fa-file-pdf"></i> Download Receipt
+                    </a>
+                    <!-- Cancel only if pending -->
+                    <form th:if="${booking.status.name() == 'PENDING'}"
+                          th:action="@{/bookings/{id}/cancel(id=${booking.id})}" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to cancel this booking?')">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Manage Bookings')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-clipboard-list"></i> Manage Booking Requests</h1>
+        <p>Review, approve, or reject rental requests for your cars</p>
+    </div>
+</div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem">
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}">Success</span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+    </div>
+
+    <div th:if="${bookings.isEmpty()}" class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <h3>No booking requests yet</h3>
+        <p>Requests will appear here when renters book your cars</p>
+    </div>
+
+    <div class="bookings-list" th:if="${!bookings.isEmpty()}">
+        <div class="booking-card" th:each="b : ${bookings}" th:classappend="${b.status.name()}">
+            <div class="booking-card-header">
+                <div class="booking-car-info">
+                    <img th:src="${b.car.carImage}" th:alt="${b.car.displayName}"
+                         class="booking-thumb" onerror="this.src='/images/car-placeholder.svg'"/>
+                    <div>
+                        <h3 th:text="${b.car.displayName}">Car</h3>
+                        <span class="booking-ref">Ref: <strong th:text="${b.bookingReference}">WR001</strong></span>
+                    </div>
+                </div>
+                <div class="booking-status-badge" th:classappend="${b.status.name()}" th:text="${b.status}">PENDING</div>
+            </div>
+
+            <div class="booking-card-body">
+                <!-- Renter Info -->
+                <div class="renter-info-strip">
+                    <div class="renter-strip-item">
+                        <i class="fas fa-user"></i>
+                        <div><small>Renter</small><strong th:text="${b.renter.name}">Name</strong></div>
+                    </div>
+                    <div class="renter-strip-item">
+                        <i class="fas fa-envelope"></i>
+                        <div><small>Email</small><strong th:text="${b.renter.email}">Email</strong></div>
+                    </div>
+                    <div class="renter-strip-item">
+                        <i class="fas fa-phone"></i>
+                        <div><small>Phone</small><strong th:text="${b.renter.phone}">Phone</strong></div>
+                    </div>
+                    <div class="renter-strip-item" th:if="${b.renter.licenseNumber != null}">
+                        <i class="fas fa-id-card"></i>
+                        <div><small>Driving License</small><strong th:text="${b.renter.licenseNumber}">DL</strong></div>
+                    </div>
+                </div>
+
+                <div class="booking-detail-grid">
+                    <div class="bd-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div><small>Rental Period</small>
+                            <strong th:text="${b.startDate + ' → ' + b.endDate}">Dates</strong></div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-clock"></i>
+                        <div><small>Duration</small><strong th:text="${b.totalDays + ' day(s)'}">Days</strong></div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-rupee-sign"></i>
+                        <div><small>Total Earnings</small>
+                            <strong class="earning-amount" th:text="'₹' + ${b.totalAmount}">₹0</strong></div>
+                    </div>
+                    <div class="bd-item">
+                        <i class="fas fa-calendar-plus"></i>
+                        <div><small>Requested On</small>
+                            <strong th:text="${#temporals.format(b.bookedAt, 'dd MMM yyyy')}">Date</strong></div>
+                    </div>
+                </div>
+
+                <div th:if="${b.renterNote != null and !b.renterNote.isEmpty()}" class="renter-note">
+                    <i class="fas fa-comment"></i>
+                    <strong>Renter's Note:</strong> <span th:text="${b.renterNote}">Note</span>
+                </div>
+            </div>
+
+            <div class="booking-card-footer">
+                <div class="booking-actions">
+                    <!-- Approve/Reject only for PENDING -->
+                    <div th:if="${b.status.name() == 'PENDING'}" class="action-group">
+                        <form th:action="@{/owner/bookings/{id}/approve(id=${b.id})}" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-green">
+                                <i class="fas fa-check-circle"></i> Approve Booking
+                            </button>
+                        </form>
+                        <button class="btn btn-danger" onclick="showRejectForm(this)"
+                                th:data-id="${b.id}">
+                            <i class="fas fa-times-circle"></i> Reject
+                        </button>
+                        <!-- Reject form (hidden) -->
+                        <div class="reject-form" style="display:none">
+                            <form th:action="@{/owner/bookings/{id}/reject(id=${b.id})}" method="post">
+                                <input type="text" name="reason" class="form-control" placeholder="Reason for rejection (optional)"/>
+                                <button type="submit" class="btn btn-danger btn-sm" style="margin-top:6px">Confirm Reject</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/bookings/{id}/receipt(id=${b.id})}" class="btn btn-outline-blue btn-sm">
+                        <i class="fas fa-file-pdf"></i> Receipt
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+function showRejectForm(btn) {
+    var form = btn.nextElementSibling;
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

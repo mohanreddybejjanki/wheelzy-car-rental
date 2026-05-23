@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('About Us')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-info-circle"></i> About Wheelzy Rentals</h1>
+        <p>Hyderabad's premier peer-to-peer car rental platform</p>
+    </div>
+</div>
+
+<div class="container" style="padding: 3rem 1.5rem; max-width: 900px">
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:4rem">
+        <div>
+            <h2 style="color:var(--blue-800); font-size:1.8rem; margin-bottom:1rem">Connecting Car Owners &amp; Renters Across Hyderabad</h2>
+            <p style="color:var(--gray-600); line-height:1.8; margin-bottom:1rem">
+                Wheelzy Rentals is a peer-to-peer car rental platform based in Hyderabad, Telangana. We bridge the gap between car owners who have idle vehicles and people who need a car for a day or more — without the hassle of traditional rental companies.
+            </p>
+            <p style="color:var(--gray-600); line-height:1.8">
+                Our platform ensures every car is verified with valid RC, PUC, and insurance documents, giving you peace of mind every time you rent.
+            </p>
+        </div>
+        <div style="background:var(--blue-50); border-radius:var(--radius-lg); padding:2rem; border:1px solid var(--blue-100)">
+            <div style="display:flex; flex-direction:column; gap:1.5rem">
+                <div style="display:flex; gap:1rem; align-items:center">
+                    <div style="width:50px;height:50px;background:var(--blue-700);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;flex-shrink:0"><i class="fas fa-car"></i></div>
+                    <div><strong style="color:var(--blue-800); display:block">10+ Verified Cars</strong><span style="color:var(--gray-600);font-size:0.88rem">Across major Hyderabad areas</span></div>
+                </div>
+                <div style="display:flex; gap:1rem; align-items:center">
+                    <div style="width:50px;height:50px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;flex-shrink:0"><i class="fas fa-shield-alt"></i></div>
+                    <div><strong style="color:var(--blue-800); display:block">100% Document Verified</strong><span style="color:var(--gray-600);font-size:0.88rem">RC, PUC, Insurance checked</span></div>
+                </div>
+                <div style="display:flex; gap:1rem; align-items:center">
+                    <div style="width:50px;height:50px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;flex-shrink:0"><i class="fas fa-rupee-sign"></i></div>
+                    <div><strong style="color:var(--blue-800); display:block">Starting ₹999/day</strong><span style="color:var(--gray-600);font-size:0.88rem">Best prices in Hyderabad</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:3rem">
+        <h2 style="color:var(--blue-800); text-align:center; margin-bottom:2rem">Our Mission</h2>
+        <div style="background:linear-gradient(135deg,var(--blue-700),var(--blue-500));border-radius:var(--radius-lg);padding:2.5rem;text-align:center;color:white">
+            <i class="fas fa-quote-left" style="font-size:2rem;opacity:0.5;margin-bottom:1rem;display:block"></i>
+            <p style="font-size:1.15rem;line-height:1.8;max-width:600px;margin:0 auto">
+                To democratize car access in Hyderabad by creating a trusted community where car owners can earn from their idle assets and renters get affordable, flexible mobility.
+            </p>
+        </div>
+    </div>
+
+    <div style="margin-bottom:3rem">
+        <h2 style="color:var(--blue-800); text-align:center; margin-bottom:2rem">How We Keep It Safe</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.5rem">
+            <div style="text-align:center; padding:1.5rem; background:white; border-radius:var(--radius-md); border:1px solid var(--blue-100); box-shadow:var(--shadow-sm)">
+                <i class="fas fa-id-card" style="font-size:2rem;color:var(--blue-600);margin-bottom:0.8rem;display:block"></i>
+                <strong style="color:var(--blue-800);display:block;margin-bottom:4px">RC Verified</strong>
+                <small style="color:var(--gray-600)">Registration certificate checked for all cars</small>
+            </div>
+            <div style="text-align:center; padding:1.5rem; background:white; border-radius:var(--radius-md); border:1px solid var(--blue-100); box-shadow:var(--shadow-sm)">
+                <i class="fas fa-leaf" style="font-size:2rem;color:var(--green);margin-bottom:0.8rem;display:block"></i>
+                <strong style="color:var(--blue-800);display:block;margin-bottom:4px">PUC Certified</strong>
+                <small style="color:var(--gray-600)">Pollution under control certificate verified</small>
+            </div>
+            <div style="text-align:center; padding:1.5rem; background:white; border-radius:var(--radius-md); border:1px solid var(--blue-100); box-shadow:var(--shadow-sm)">
+                <i class="fas fa-file-medical" style="font-size:2rem;color:var(--orange);margin-bottom:0.8rem;display:block"></i>
+                <strong style="color:var(--blue-800);display:block;margin-bottom:4px">Insured</strong>
+                <small style="color:var(--gray-600)">Valid insurance on all listed vehicles</small>
+            </div>
+            <div style="text-align:center; padding:1.5rem; background:white; border-radius:var(--radius-md); border:1px solid var(--blue-100); box-shadow:var(--shadow-sm)">
+                <i class="fas fa-user-check" style="font-size:2rem;color:var(--blue-600);margin-bottom:0.8rem;display:block"></i>
+                <strong style="color:var(--blue-800);display:block;margin-bottom:4px">License Check</strong>
+                <small style="color:var(--gray-600)">Valid DL required from all renters</small>
+            </div>
+        </div>
+    </div>
+
+    <div style="background:var(--blue-50);border-radius:var(--radius-lg);padding:2rem;text-align:center;border:1px solid var(--blue-100)">
+        <h2 style="color:var(--blue-800);margin-bottom:0.5rem">Ready to Ride?</h2>
+        <p style="color:var(--gray-600);margin-bottom:1.5rem">Join hundreds of Hyderabadis already using Wheelzy Rentals</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+            <a href="/cars" class="btn btn-blue btn-lg"><i class="fas fa-search"></i> Browse Cars</a>
+            <a href="/register" class="btn btn-outline-blue btn-lg"><i class="fas fa-user-plus"></i> Create Account</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

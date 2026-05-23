@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Browse Cars')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-car"></i> Browse Cars in Hyderabad</h1>
+        <p>Find your perfect ride from verified local owners</p>
+    </div>
+</div>
+
+<div class="container layout-with-sidebar" style="padding-top:2rem">
+    <!-- Search & Filters -->
+    <aside class="sidebar">
+        <div class="filter-card">
+            <h3><i class="fas fa-filter"></i> Search & Filter</h3>
+            <form action="/cars" method="get">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input type="text" name="search" class="form-control" placeholder="Brand, model, area..." th:value="${search}"/>
+                </div>
+                <button type="submit" class="btn btn-blue w-full">Apply Filters</button>
+                <a href="/cars" class="btn btn-outline-blue w-full" style="margin-top:8px">Clear</a>
+            </form>
+        </div>
+
+        <div class="filter-card">
+            <h3><i class="fas fa-map-marker-alt"></i> Popular Areas</h3>
+            <div class="area-tags">
+                <a href="/cars?search=Gachibowli" class="area-tag">Gachibowli</a>
+                <a href="/cars?search=Banjara Hills" class="area-tag">Banjara Hills</a>
+                <a href="/cars?search=Hitech City" class="area-tag">Hitech City</a>
+                <a href="/cars?search=Jubilee Hills" class="area-tag">Jubilee Hills</a>
+                <a href="/cars?search=Madhapur" class="area-tag">Madhapur</a>
+                <a href="/cars?search=Kondapur" class="area-tag">Kondapur</a>
+                <a href="/cars?search=Kukatpally" class="area-tag">Kukatpally</a>
+                <a href="/cars?search=Secunderabad" class="area-tag">Secunderabad</a>
+                <a href="/cars?search=Ameerpet" class="area-tag">Ameerpet</a>
+                <a href="/cars?search=Begumpet" class="area-tag">Begumpet</a>
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <h3><i class="fas fa-gas-pump"></i> Fuel Type</h3>
+            <div class="fuel-tags">
+                <a href="/cars?search=PETROL" class="fuel-tag petrol">⛽ Petrol</a>
+                <a href="/cars?search=DIESEL" class="fuel-tag diesel">🛢️ Diesel</a>
+                <a href="/cars?search=ELECTRIC" class="fuel-tag electric">⚡ Electric</a>
+                <a href="/cars?search=CNG" class="fuel-tag cng">🌿 CNG</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Cars Grid -->
+    <main class="main-content">
+        <div class="results-header">
+            <span class="results-count">
+                <strong th:text="${cars.size()}">0</strong> cars available
+                <span th:if="${search != null and !search.isEmpty()}">
+                    for "<strong th:text="${search}"></strong>"
+                </span>
+            </span>
+        </div>
+
+        <div class="cars-grid" th:if="${!cars.isEmpty()}">
+            <div class="car-card" th:each="car : ${cars}">
+                <div class="car-image-wrap">
+                    <img th:src="${car.carImage}" th:alt="${car.displayName}" class="car-img"
+                         onerror="this.src='/images/car-placeholder.svg'"/>
+                    <div class="car-badge" th:classappend="${car.fuelType.name() == 'ELECTRIC'} ? 'electric' : ''"
+                         th:text="${car.fuelType}">PETROL</div>
+                    <div class="car-price">₹<span th:text="${car.pricePerDay}">999</span>/day</div>
+                </div>
+                <div class="car-body">
+                    <h3 class="car-name" th:text="${car.displayName}">Car Name</h3>
+                    <p class="car-variant" th:text="${car.variant}">Variant</p>
+                    <div class="car-specs">
+                        <span title="Seats"><i class="fas fa-users"></i> <span th:text="${car.seats}">5</span></span>
+                        <span title="Transmission"><i class="fas fa-cog"></i> <span th:text="${car.transmission}">Auto</span></span>
+                        <span title="Mileage" th:if="${car.mileage > 0}"><i class="fas fa-tachometer-alt"></i> <span th:text="${car.mileage}">0</span> kmpl</span>
+                        <span title="Color"><i class="fas fa-palette"></i> <span th:text="${car.color}">White</span></span>
+                    </div>
+                    <div class="car-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${car.location + ', Hyderabad'}">Location</span>
+                    </div>
+                    <div class="car-owner">
+                        <i class="fas fa-user-tie"></i>
+                        <span th:text="'Owner: ' + ${car.owner.name}">Owner</span>
+                    </div>
+                    <div class="car-actions">
+                        <a th:href="@{/cars/{id}(id=${car.id})}" class="btn btn-blue w-full">View &amp; Book</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${cars.isEmpty()}" class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>No cars found</h3>
+            <p>Try a different search term or <a href="/cars">view all cars</a></p>
+        </div>
+    </main>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

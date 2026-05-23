@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Car Details')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem">
+    <div class="breadcrumb">
+        <a href="/">Home</a> / <a href="/cars">Cars</a> / <span th:text="${car.displayName}">Car</span>
+    </div>
+
+    <div class="car-detail-layout">
+        <!-- Left: Images & Map -->
+        <div class="car-detail-left">
+            <div class="car-detail-image-box">
+                <img th:src="${car.carImage}" th:alt="${car.displayName}" class="car-detail-img"
+                     onerror="this.src='/images/car-placeholder.svg'"/>
+                <div class="img-overlay-badge" th:text="${car.fuelType}">PETROL</div>
+            </div>
+
+            <!-- Mini Map -->
+            <div class="detail-map-card">
+                <h4><i class="fas fa-map-marker-alt"></i> Pickup Location</h4>
+                <p th:text="${car.location + ', Hyderabad, Telangana'}">Location</p>
+                <div id="detail-map" style="height:220px;border-radius:10px;margin-top:10px"></div>
+            </div>
+        </div>
+
+        <!-- Right: Details & Booking -->
+        <div class="car-detail-right">
+            <div class="car-detail-header">
+                <h1 th:text="${car.displayName}">Car Name</h1>
+                <p class="car-variant-detail" th:text="${car.variant + ' | ' + car.color}">Variant</p>
+                <div class="price-tag">
+                    <span class="price-big">₹<span th:text="${car.pricePerDay}">999</span></span>
+                    <span class="price-label">per day</span>
+                </div>
+            </div>
+
+            <!-- Specs Grid -->
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <i class="fas fa-gas-pump"></i>
+                    <span class="spec-label">Fuel Type</span>
+                    <span class="spec-value" th:text="${car.fuelType}">Petrol</span>
+                </div>
+                <div class="spec-item">
+                    <i class="fas fa-cog"></i>
+                    <span class="spec-label">Transmission</span>
+                    <span class="spec-value" th:text="${car.transmission}">Manual</span>
+                </div>
+                <div class="spec-item">
+                    <i class="fas fa-users"></i>
+                    <span class="spec-label">Seats</span>
+                    <span class="spec-value" th:text="${car.seats}">5</span>
+                </div>
+                <div class="spec-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="spec-label">Mileage</span>
+                    <span class="spec-value" th:text="${car.mileage > 0 ? car.mileage + ' kmpl' : 'N/A'}">0</span>
+                </div>
+                <div class="spec-item">
+                    <i class="fas fa-engine"></i>
+                    <span class="spec-label">Engine</span>
+                    <span class="spec-value" th:text="${car.engineCC}">1197cc</span>
+                </div>
+                <div class="spec-item">
+                    <i class="fas fa-calendar"></i>
+                    <span class="spec-label">Year</span>
+                    <span class="spec-value" th:text="${car.year}">2022</span>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="detail-section" th:if="${car.description != null}">
+                <h3><i class="fas fa-info-circle"></i> About this Car</h3>
+                <p th:text="${car.description}">Description</p>
+            </div>
+
+            <!-- Documents -->
+            <div class="detail-section">
+                <h3><i class="fas fa-file-alt"></i> Vehicle Documents</h3>
+                <div class="doc-grid">
+                    <div class="doc-item verified">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>RC Number</strong>
+                            <span th:text="${car.registrationNumber}">TS09AB1234</span>
+                            <small th:text="'Expires: ' + ${car.rcExpiry}">Expiry</small>
+                        </div>
+                    </div>
+                    <div class="doc-item verified">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>PUC Number</strong>
+                            <span th:text="${car.pucNumber}">PUC001</span>
+                            <small th:text="'Expires: ' + ${car.pucExpiry}">Expiry</small>
+                        </div>
+                    </div>
+                    <div class="doc-item verified">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Insurance</strong>
+                            <span th:text="${car.insuranceNumber}">INS-001</span>
+                            <small th:text="'Expires: ' + ${car.insuranceExpiry}">Expiry</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Info -->
+            <div class="detail-section owner-card">
+                <h3><i class="fas fa-user-tie"></i> Car Owner</h3>
+                <div class="owner-info">
+                    <div class="owner-avatar"><i class="fas fa-user"></i></div>
+                    <div class="owner-details">
+                        <strong th:text="${car.owner.name}">Owner Name</strong>
+                        <span th:text="${car.owner.city + ', Hyderabad'}">City</span>
+                        <span><i class="fas fa-phone"></i> <span th:text="${car.owner.phone}">Phone</span></span>
+                    </div>
+                    <div class="owner-badge"><i class="fas fa-shield-alt"></i> Verified Owner</div>
+                </div>
+            </div>
+
+            <!-- Booking Panel -->
+            <div class="booking-panel" th:if="${car.available}">
+                <h3><i class="fas fa-calendar-check"></i> Book This Car</h3>
+                <p class="booking-min-note"><i class="fas fa-info-circle"></i> Minimum rental: 1 day</p>
+
+                <div th:if="${user != null and user.role.name() == 'RENTER'}">
+                    <a th:href="@{/bookings/book/{id}(id=${car.id})}" class="btn btn-blue btn-lg w-full">
+                        <i class="fas fa-car-side"></i> Book Now — ₹<span th:text="${car.pricePerDay}">0</span>/day
+                    </a>
+                </div>
+                <div th:if="${user == null}">
+                    <a href="/login" class="btn btn-blue btn-lg w-full">
+                        <i class="fas fa-sign-in-alt"></i> Login to Book
+                    </a>
+                </div>
+                <div th:if="${user != null and user.role.name() == 'OWNER'}">
+                    <div class="alert alert-info">Owners cannot rent cars. Switch to a renter account.</div>
+                </div>
+            </div>
+
+            <div class="booking-panel unavailable" th:if="${!car.available}">
+                <div class="unavailable-msg">
+                    <i class="fas fa-times-circle"></i>
+                    <h3>Not Available</h3>
+                    <p>This car is currently booked. Check back later or <a href="/cars">browse other cars</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:inline="javascript">
+var lat = /*[[${car.latitude}]]*/ '17.4065';
+var lng = /*[[${car.longitude}]]*/ '78.4772';
+var carName = /*[[${car.displayName}]]*/ 'Car';
+
+function initDetailMap() {
+    if (typeof L === 'undefined') return;
+    var map = L.map('detail-map').setView([parseFloat(lat), parseFloat(lng)], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OpenStreetMap'}).addTo(map);
+    L.marker([parseFloat(lat), parseFloat(lng)])
+     .addTo(map)
+     .bindPopup('<b>' + carName + '</b><br/>Pickup Location')
+     .openPopup();
+}
+
+var link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+document.head.appendChild(link);
+var s = document.createElement('script');
+s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+s.onload = initDetailMap;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <h3><i class="fas fa-car"></i> Wheelzy Rentals</h3>
+            <p>Hyderabad's premier peer-to-peer car rental platform. Rent from trusted locals, earn from your idle car.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h4>Quick Links</h4>
+            <a href="/cars">Browse Cars</a>
+            <a href="/register">Become an Owner</a>
+            <a href="/about">About Us</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="footer-links">
+            <h4>Support</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Insurance</a>
+        </div>
+        <div class="footer-contact">
+            <h4>Contact Us</h4>
+            <p><i class="fas fa-map-marker-alt"></i> Banjara Hills, Hyderabad, TS 500034</p>
+            <p><i class="fas fa-phone"></i> +91-9876543210</p>
+            <p><i class="fas fa-envelope"></i> support@wheelzyrentals.com</p>
+            <p><i class="fas fa-clock"></i> 24/7 Customer Support</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 Wheelzy Rentals. All rights reserved. | Made with <i class="fas fa-heart text-red"></i> in Hyderabad</p>
+    </div>
+</footer>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

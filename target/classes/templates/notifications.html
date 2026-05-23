@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Notifications')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-bell"></i> Notifications</h1>
+        <p>Stay updated on your bookings and activities</p>
+    </div>
+</div>
+
+<div class="container" style="padding-top:2rem;padding-bottom:3rem;max-width:750px">
+    <div th:if="${notifications.isEmpty()}" class="empty-state">
+        <i class="fas fa-bell-slash"></i>
+        <h3>No notifications yet</h3>
+        <p>You'll be notified here about booking updates</p>
+    </div>
+
+    <div class="notif-list" th:if="${!notifications.isEmpty()}">
+        <div class="notif-item" th:each="n : ${notifications}"
+             th:classappend="${n.read} ? 'read' : 'unread'">
+            <div class="notif-icon"
+                 th:classappend="${n.type.name() == 'BOOKING_APPROVED'} ? 'green' :
+                                 (${n.type.name() == 'BOOKING_REJECTED'} ? 'red' :
+                                 (${n.type.name() == 'BOOKING_REQUEST'} ? 'blue' : 'gray'))">
+                <i th:class="${n.type.name() == 'BOOKING_APPROVED'} ? 'fas fa-check-circle' :
+                              (${n.type.name() == 'BOOKING_REJECTED'} ? 'fas fa-times-circle' :
+                              (${n.type.name() == 'BOOKING_REQUEST'} ? 'fas fa-car-side' : 'fas fa-info-circle'))"></i>
+            </div>
+            <div class="notif-content">
+                <div class="notif-header-row">
+                    <h4 th:text="${n.title}">Title</h4>
+                    <span class="notif-time" th:text="${#temporals.format(n.createdAt, 'dd MMM, hh:mm a')}">Time</span>
+                </div>
+                <p th:text="${n.message}">Message</p>
+                <div class="notif-actions" th:if="${n.bookingId != null}">
+                    <a th:if="${user.role.name() == 'RENTER'}" th:href="@{/bookings/my}" class="notif-link">
+                        View Booking <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a th:if="${user.role.name() == 'OWNER'}" th:href="@{/owner/bookings}" class="notif-link">
+                        Manage Booking <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="notif-unread-dot" th:if="${!n.read}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

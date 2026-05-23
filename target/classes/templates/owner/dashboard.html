@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Owner Dashboard')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-tachometer-alt"></i> Owner Dashboard</h1>
+        <p>Manage your listed cars and rental requests</p>
+    </div>
+</div>
+
+<div class="container dashboard-layout" style="padding-top:2rem;padding-bottom:3rem">
+    <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle"></i> <span th:text="${success}">Success</span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-card blue">
+            <i class="fas fa-car"></i>
+            <div>
+                <h3 th:text="${cars.size()}">0</h3>
+                <p>Listed Cars</p>
+            </div>
+        </div>
+        <div class="stat-card orange">
+            <i class="fas fa-clock"></i>
+            <div>
+                <h3 th:text="${pendingBookings.size()}">0</h3>
+                <p>Pending Requests</p>
+            </div>
+        </div>
+        <div class="stat-card green">
+            <i class="fas fa-check-circle"></i>
+            <div>
+                <h3 th:text="${allBookings.size()}">0</h3>
+                <p>Total Bookings</p>
+            </div>
+        </div>
+        <div class="stat-card purple">
+            <i class="fas fa-rupee-sign"></i>
+            <div>
+                <h3>Hyderabad</h3>
+                <p>Your City</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Requests Alert -->
+    <div th:if="${!pendingBookings.isEmpty()}" class="pending-alert">
+        <i class="fas fa-bell"></i>
+        <span>You have <strong th:text="${pendingBookings.size()}">0</strong> pending booking request(s) waiting for your approval!</span>
+        <a href="/owner/bookings" class="btn btn-orange btn-sm">Review Now</a>
+    </div>
+
+    <!-- My Cars -->
+    <div class="dashboard-section">
+        <div class="section-title-row">
+            <h2><i class="fas fa-car"></i> My Listed Cars</h2>
+            <a href="/owner/cars/add" class="btn btn-blue btn-sm"><i class="fas fa-plus"></i> Add New Car</a>
+        </div>
+
+        <div th:if="${cars.isEmpty()}" class="empty-state small">
+            <i class="fas fa-car-side"></i>
+            <p>No cars listed yet. <a href="/owner/cars/add">Add your first car</a></p>
+        </div>
+
+        <div class="owner-cars-grid" th:if="${!cars.isEmpty()}">
+            <div class="owner-car-card" th:each="car : ${cars}">
+                <img th:src="${car.carImage}" th:alt="${car.displayName}" class="owner-car-img"
+                     onerror="this.src='/images/car-placeholder.svg'"/>
+                <div class="owner-car-body">
+                    <h4 th:text="${car.displayName}">Car</h4>
+                    <p th:text="${car.location + ', Hyderabad'}">Location</p>
+                    <div class="owner-car-price">₹<span th:text="${car.pricePerDay}">0</span>/day</div>
+                    <div class="owner-car-meta">
+                        <span>RC: <span th:text="${car.registrationNumber}">RC</span></span>
+                        <span>PUC: <span th:text="${car.pucNumber}">PUC</span></span>
+                    </div>
+                    <div class="availability-toggle">
+                        <span class="avail-dot" th:classappend="${car.available} ? 'available' : 'unavailable'"></span>
+                        <span th:text="${car.available} ? 'Available' : 'Unavailable'">Available</span>
+                        <form th:action="@{/owner/cars/{id}/toggle(id=${car.id})}" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-sm btn-outline-blue">Toggle</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Bookings Preview -->
+    <div class="dashboard-section" th:if="${!allBookings.isEmpty()}">
+        <div class="section-title-row">
+            <h2><i class="fas fa-clipboard-list"></i> Recent Booking Requests</h2>
+            <a href="/owner/bookings" class="btn btn-outline-blue btn-sm">View All</a>
+        </div>
+
+        <div class="bookings-table-wrap">
+            <table class="bookings-table">
+                <thead>
+                <tr>
+                    <th>Ref</th><th>Car</th><th>Renter</th><th>Dates</th><th>Amount</th><th>Status</th><th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${allBookings}" th:if="${bStat.index < 5}">
+                    <td><strong th:text="${b.bookingReference}">Ref</strong></td>
+                    <td th:text="${b.car.displayName}">Car</td>
+                    <td th:text="${b.renter.name}">Renter</td>
+                    <td th:text="${b.startDate + ' → ' + b.endDate}">Dates</td>
+                    <td th:text="'₹' + ${b.totalAmount}">Amount</td>
+                    <td><span class="status-pill" th:classappend="${b.status}" th:text="${b.status}">Status</span></td>
+                    <td>
+                        <div th:if="${b.status.name() == 'PENDING'}" style="display:flex;gap:6px">
+                            <form th:action="@{/owner/bookings/{id}/approve(id=${b.id})}" method="post" style="display:inline">
+                                <button class="btn btn-green btn-xs">✓ Approve</button>
+                            </form>
+                            <form th:action="@{/owner/bookings/{id}/reject(id=${b.id})}" method="post" style="display:inline">
+                                <button class="btn btn-danger btn-xs">✕ Reject</button>
+                            </form>
+                        </div>
+                        <span th:if="${b.status.name() != 'PENDING'}" class="text-muted">—</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

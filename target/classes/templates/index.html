@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Home')}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-map-marker-alt"></i> Hyderabad's #1 P2P Car Rental</div>
+        <h1 class="hero-title">Drive Your Dream Car<br/><span class="hero-accent">in Hyderabad</span></h1>
+        <p class="hero-sub">Rent from verified local owners. Affordable, trusted, and hassle-free. 500+ happy renters monthly.</p>
+
+        <!-- Search Bar -->
+        <form action="/cars" method="get" class="hero-search">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" name="search" placeholder="Search by car brand, model, area..." class="search-input" th:value="${search}"/>
+                <button type="submit" class="btn btn-blue search-btn">Search Cars</button>
+            </div>
+            <div class="search-tags">
+                <span class="tag">Swift</span>
+                <span class="tag">Creta</span>
+                <span class="tag">Innova</span>
+                <span class="tag">Gachibowli</span>
+                <span class="tag">Banjara Hills</span>
+                <span class="tag">Electric</span>
+            </div>
+        </form>
+    </div>
+    <div class="hero-stats">
+        <div class="stat"><span>500+</span><p>Happy Renters</p></div>
+        <div class="stat"><span>10+</span><p>Verified Cars</p></div>
+        <div class="stat"><span>15+</span><p>Hyderabad Areas</p></div>
+        <div class="stat"><span>₹999</span><p>Starting Price/Day</p></div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <h2>How Wheelzy Works</h2>
+            <p>Rent a car in just 3 simple steps</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-search"></i></div>
+                <div class="step-num">01</div>
+                <h3>Browse & Select</h3>
+                <p>Search from our verified fleet of cars across Hyderabad. Filter by area, fuel type and price.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="step-num">02</div>
+                <h3>Book & Wait</h3>
+                <p>Select your dates (min. 1 day), submit your request. The owner reviews and approves it.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="fas fa-car-side"></i></div>
+                <div class="step-num">03</div>
+                <h3>Pick Up & Drive!</h3>
+                <p>Get notified when approved. Pick up the car from the owner's location and enjoy your ride!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Cars -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Available Cars in Hyderabad</h2>
+            <p>Verified cars from trusted local owners</p>
+            <a href="/cars" class="btn btn-outline-blue">View All Cars <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="cars-grid" th:if="${!cars.isEmpty()}">
+            <div class="car-card" th:each="car : ${cars}" th:if="${carStat.index < 6}">
+                <div class="car-image-wrap">
+                    <img th:src="${car.carImage}" th:alt="${car.displayName}" class="car-img" onerror="this.src='/images/car-placeholder.svg'"/>
+                    <div class="car-badge" th:text="${car.fuelType}">PETROL</div>
+                    <div class="car-price">₹<span th:text="${car.pricePerDay}">999</span>/day</div>
+                </div>
+                <div class="car-body">
+                    <h3 class="car-name" th:text="${car.displayName}">Car Name</h3>
+                    <p class="car-variant" th:text="${car.variant}">Variant</p>
+                    <div class="car-specs">
+                        <span><i class="fas fa-users"></i> <span th:text="${car.seats}">5</span> Seats</span>
+                        <span><i class="fas fa-cog"></i> <span th:text="${car.transmission}">Manual</span></span>
+                        <span><i class="fas fa-gas-pump"></i> <span th:text="${car.mileage}">0</span> kmpl</span>
+                    </div>
+                    <div class="car-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${car.location + ', Hyderabad'}">Location</span>
+                    </div>
+                    <div class="car-owner">
+                        <i class="fas fa-user-tie"></i>
+                        <span th:text="'Owner: ' + ${car.owner.name}">Owner</span>
+                    </div>
+                    <div class="car-actions">
+                        <a th:href="@{/cars/{id}(id=${car.id})}" class="btn btn-blue w-full">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${cars.isEmpty()}" class="empty-state">
+            <i class="fas fa-car-side"></i>
+            <h3>No cars available right now</h3>
+            <p>Check back soon!</p>
+        </div>
+    </div>
+</section>
+
+<!-- Why Wheelzy -->
+<section class="why-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Why Choose Wheelzy?</h2>
+        </div>
+        <div class="why-grid">
+            <div class="why-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Verified Owners</h3>
+                <p>All cars and owners are verified with valid RC, PUC, and insurance documents.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-rupee-sign"></i>
+                <h3>Best Prices</h3>
+                <p>P2P model means no middleman fees. Get the best rates directly from owners.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-bell"></i>
+                <h3>Real-time Notifications</h3>
+                <p>Stay updated on your booking status with instant in-app notifications.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-file-pdf"></i>
+                <h3>PDF Receipts</h3>
+                <p>Download detailed booking receipts with all car and payment information.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>Hyderabad Coverage</h3>
+                <p>Cars available across Hyderabad — Gachibowli, Banjara Hills, Hitech City & more.</p>
+            </div>
+            <div class="why-card">
+                <i class="fas fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Round the clock customer support for any issues during your rental.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="map-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Cars Near You in Hyderabad</h2>
+            <p>Find cars across all major Hyderabad locations</p>
+        </div>
+        <div id="map" class="map-container"></div>
+        <div class="map-legend">
+            <span><i class="fas fa-map-pin" style="color:#1976D2"></i> Car Available</span>
+            <span><i class="fas fa-circle" style="color:#4CAF50"></i> Your Area</span>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box">
+            <div class="cta-text">
+                <h2>Own a Car? Earn with Wheelzy!</h2>
+                <p>List your idle car and earn ₹15,000–₹40,000 per month. Join 10+ owners already earning.</p>
+            </div>
+            <div class="cta-actions">
+                <a href="/register" class="btn btn-white-blue">List Your Car Free</a>
+                <a href="/cars" class="btn btn-outline-white">Browse as Renter</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+// Simple OpenStreetMap using Leaflet (free, no API key)
+function initMap() {
+    if (typeof L === 'undefined') return;
+    var map = L.map('map').setView([17.4065, 78.4772], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var cars = [
+        {lat: 17.4156, lng: 78.4347, name: "Maruti Swift - Banjara Hills", price: "₹1,499/day"},
+        {lat: 17.4319, lng: 78.4073, name: "Hyundai Creta - Jubilee Hills", price: "₹2,499/day"},
+        {lat: 17.4401, lng: 78.3489, name: "Toyota Innova - Gachibowli", price: "₹3,499/day"},
+        {lat: 17.4486, lng: 78.3908, name: "Tata Nexon EV - Madhapur", price: "₹2,799/day"},
+        {lat: 17.4478, lng: 78.3762, name: "Honda City - Hitech City", price: "₹1,999/day"},
+        {lat: 17.4596, lng: 78.3536, name: "Kia Seltos - Kondapur", price: "₹2,299/day"},
+        {lat: 17.4849, lng: 78.3998, name: "Mahindra XUV700 - Kukatpally", price: "₹3,999/day"},
+        {lat: 17.4399, lng: 78.4983, name: "Baleno - Secunderabad", price: "₹1,699/day"},
+        {lat: 17.4374, lng: 78.4482, name: "MG Hector - Ameerpet", price: "₹2,799/day"},
+        {lat: 17.4358, lng: 78.4651, name: "Skoda Slavia - Begumpet", price: "₹2,199/day"}
+    ];
+
+    var icon = L.divIcon({className: 'map-pin', html: '<div style="background:#1976D2;color:white;padding:4px 8px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)"><i>🚗</i></div>', iconSize: [60, 28]});
+
+    cars.forEach(function(car) {
+        L.marker([car.lat, car.lng], {icon: icon})
+         .addTo(map)
+         .bindPopup('<b>' + car.name + '</b><br/>' + car.price + '<br/><a href="/cars" style="color:#1976D2">View & Book →</a>');
+    });
+}
+
+// Load Leaflet dynamically
+var link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+document.head.appendChild(link);
+
+var script = document.createElement('script');
+script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+script.onload = initMap;
+document.head.appendChild(script);
+
+document.querySelectorAll('.tag').forEach(function(tag) {
+    tag.addEventListener('click', function() {
+        document.querySelector('.search-input').value = this.textContent;
+    });
+});
+</script>
+</body>
+</html>

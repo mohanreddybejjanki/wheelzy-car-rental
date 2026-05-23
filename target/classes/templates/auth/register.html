@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Register')}"></head>
+<body class="auth-body">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="auth-container">
+    <div class="auth-card" style="max-width:560px">
+        <div class="auth-header">
+            <div class="auth-logo"><i class="fas fa-user-plus"></i></div>
+            <h2>Join Wheelzy</h2>
+            <p>Create your free account and start renting or earning today</p>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Error</span>
+        </div>
+
+        <form action="/register" method="post" class="auth-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Your full name" required/>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="+91 XXXXX XXXXX" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="your@email.com" required/>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Create a strong password" required/>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Address in Hyderabad</label>
+                <input type="text" name="address" class="form-control" placeholder="e.g. Banjara Hills, Hyderabad"/>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-user-tag"></i> I want to...</label>
+                <div class="role-selector">
+                    <label class="role-option" for="renterRole">
+                        <input type="radio" id="renterRole" name="role" value="RENTER" checked onchange="toggleLicense(false)"/>
+                        <div class="role-card">
+                            <i class="fas fa-key"></i>
+                            <strong>Rent a Car</strong>
+                            <small>Browse and book cars from owners</small>
+                        </div>
+                    </label>
+                    <label class="role-option" for="ownerRole">
+                        <input type="radio" id="ownerRole" name="role" value="OWNER" onchange="toggleLicense(true)"/>
+                        <div class="role-card">
+                            <i class="fas fa-car"></i>
+                            <strong>List My Car</strong>
+                            <small>Earn by renting your car to others</small>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="licenseGroup">
+                <label><i class="fas fa-id-card"></i> Driving License Number</label>
+                <input type="text" name="licenseNumber" class="form-control" placeholder="e.g. TS09 2020 123456"/>
+                <small class="form-hint">Required for renters. Must be valid Telangana DL.</small>
+            </div>
+
+            <button type="submit" class="btn btn-blue w-full btn-lg">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+
+        <p class="auth-footer">Already have an account? <a href="/login">Login</a></p>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+function toggleLicense(isOwner) {
+    document.getElementById('licenseGroup').style.display = isOwner ? 'none' : 'block';
+}
+</script>
+</body>
+</html>
