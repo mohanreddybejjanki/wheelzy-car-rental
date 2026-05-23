@@ -1,13 +1,13 @@
 # 🚗 Wheelzy Rentals — Peer-to-Peer Car Rental | Hyderabad
 
-A full-stack Spring Boot + Thymeleaf peer-to-peer car rental system inspired by ZoomCar, built for Hyderabad.
+A full-stack Spring Boot + Thymeleaf peer-to-peer car rental system.
 
 ---
 
 ## 🛠️ Tech Stack
 - **Backend**: Java 17 + Spring Boot 3.2
 - **Frontend**: Thymeleaf + HTML5 + CSS3 (Light Blue & White theme)
-- **Database**: H2 In-Memory (auto-seeded with 10 cars & 13 users)
+- **Database**: MySQL
 - **Maps**: Leaflet.js (OpenStreetMap — Free, no API key needed)
 - **PDF**: iText 7 (booking receipts)
 - **Auth**: Simple session-based (password compared with `.equals()`, no JWT)
@@ -28,53 +28,6 @@ mvn spring-boot:run
 
 Then open: **http://localhost:8080**
 
----
-
-## 👥 Pre-seeded Demo Accounts
-
-### 🔑 Renters (can browse & book cars)
-| Name | Email | Password |
-|------|-------|----------|
-| Test Renter | renter@example.com | renter123 |
-| Demo User | demo@example.com | demo123 |
-
-### 🚗 Car Owners (can manage cars & approve bookings)
-| Name | Email | Password | Area |
-|------|-------|----------|------|
-| Rahul Sharma | rahul@example.com | rahul123 | Banjara Hills |
-| Priya Reddy | priya@example.com | priya123 | Jubilee Hills |
-| Kiran Kumar | kiran@example.com | kiran123 | Gachibowli |
-| Sneha Patel | sneha@example.com | sneha123 | Madhapur |
-| Arun Nair | arun@example.com | arun123 | Hitech City |
-| Divya Menon | divya@example.com | divya123 | Kondapur |
-| Vikram Singh | vikram@example.com | vikram123 | Kukatpally |
-| Anita Joshi | anita@example.com | anita123 | Secunderabad |
-| Ravi Teja | ravi@example.com | ravi123 | Ameerpet |
-| Meena Iyer | meena@example.com | meena123 | Begumpet |
-
-### 🔧 Admin
-| Email | Password |
-|-------|----------|
-| admin@wheelzy.com | admin123 |
-
----
-
-## 🚙 Pre-seeded Cars (10 Cars)
-
-| # | Car | Fuel | Price/Day | Location |
-|---|-----|------|-----------|----------|
-| 1 | Maruti Swift VXI (2022) | Petrol | ₹1,499 | Banjara Hills |
-| 2 | Hyundai Creta SX (2023) | Petrol | ₹2,499 | Jubilee Hills |
-| 3 | Toyota Innova Crysta ZX (2021) | Diesel | ₹3,499 | Gachibowli |
-| 4 | Tata Nexon EV Max (2023) | Electric | ₹2,799 | Madhapur |
-| 5 | Honda City ZX CVT (2022) | Petrol | ₹1,999 | Hitech City |
-| 6 | Kia Seltos HTX Plus (2023) | Petrol | ₹2,299 | Kondapur |
-| 7 | Mahindra XUV700 AX7 (2022) | Diesel | ₹3,999 | Kukatpally |
-| 8 | Maruti Baleno Alpha (2023) | Petrol | ₹1,699 | Secunderabad |
-| 9 | MG Hector Sharp Pro (2023) | Petrol | ₹2,799 | Ameerpet |
-| 10 | Skoda Slavia Style (2022) | Petrol | ₹2,199 | Begumpet |
-
----
 
 ## 🗺️ Key Features
 
@@ -175,19 +128,5 @@ Owner gets notification → Reviews request → Approves or Rejects
     ↓
 Renter gets notification → Downloads PDF receipt → Picks up car
 ```
-
----
-
-## 📊 H2 Console (Dev Only)
-URL: http://localhost:8080/h2-console
-- JDBC URL: `jdbc:h2:mem:wheelzydb`
-- Username: `sa`
-- Password: (empty)
-
----
-
-## ⚠️ Notes
-- Database resets on each restart (H2 in-memory). Data is re-seeded automatically.
-- For production, replace H2 with MySQL/PostgreSQL in `application.properties`
 - No JWT — authentication uses HTTP session + simple `.equals()` password check
 - Maps use free OpenStreetMap via Leaflet.js (no API key needed)
